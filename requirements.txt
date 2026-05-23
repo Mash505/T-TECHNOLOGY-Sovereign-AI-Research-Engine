@@ -1,0 +1,7 @@
+streamlit
+ollama
+pymupdf
+matplotlib
+plotly
+pandas
+numpy
