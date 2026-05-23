@@ -1,8 +1,23 @@
 import streamlit as st
-import ollama
-import fitz
 import re
 from datetime import datetime
+
+# =========================================================
+# OPTIONAL IMPORTS (Cross Platform Safe)
+# =========================================================
+
+OLLAMA_AVAILABLE = True
+PDF_AVAILABLE = True
+
+try:
+    import ollama
+except:
+    OLLAMA_AVAILABLE = False
+
+try:
+    import fitz
+except:
+    PDF_AVAILABLE = False
 
 # =========================================================
 # PAGE CONFIG
@@ -15,7 +30,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# ADVANCED STYLING
+# ADVANCED CSS
 # =========================================================
 
 st.markdown("""
@@ -48,11 +63,6 @@ code {
 
 .katex {
     font-size: 1.25em !important;
-}
-
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
 }
 
 [data-testid="stSidebar"] {
@@ -89,18 +99,18 @@ with st.sidebar:
     st.markdown("---")
 
     model_choice = st.selectbox(
-        "Choose Gemma Model",
+        "Gemma Model",
         [
-            "gemma3:12b",
-            "gemma3:4b"
+            "gemma3:4b",
+            "gemma3:12b"
         ]
     )
 
     research_mode = st.selectbox(
         "Research Mode",
         [
-            "Quantitative Finance",
             "Mathematics",
+            "Quantitative Finance",
             "Physics",
             "Machine Learning",
             "General Research"
@@ -115,7 +125,7 @@ with st.sidebar:
     )
 
     max_context = st.slider(
-        "Maximum Context",
+        "Context Size",
         2000,
         30000,
         12000
@@ -123,16 +133,15 @@ with st.sidebar:
 
     st.markdown("---")
 
-    st.success("✅ Sovereign Local Inference Enabled")
+    if OLLAMA_AVAILABLE:
+        st.success("✅ Ollama Available")
+    else:
+        st.warning("⚠ Ollama Not Installed")
 
-    st.info(f"""
-Model: {model_choice}
-
-Mode: {research_mode}
-
-Architecture:
-T TECHNOLOGY RESEARCH LAB
-""")
+    if PDF_AVAILABLE:
+        st.success("✅ PDF Engine Available")
+    else:
+        st.warning("⚠ PDF Support Disabled")
 
 # =========================================================
 # HEADER
@@ -148,9 +157,9 @@ Advanced sovereign AI infrastructure for:
 - Mathematical reasoning
 - Quantitative finance
 - Scientific research
-- PDF intelligence
 - LaTeX-preserving workflows
-- Local private inference
+- Local AI inference
+- Cross-platform compatibility
 """)
 
 st.markdown("---")
@@ -161,17 +170,26 @@ st.markdown("---")
 
 def extract_pdf_text(uploaded_file):
 
-    text = ""
+    if not PDF_AVAILABLE:
+        return "PDF support unavailable on this device."
 
-    pdf_document = fitz.open(
-        stream=uploaded_file.read(),
-        filetype="pdf"
-    )
+    try:
 
-    for page in pdf_document:
-        text += page.get_text()
+        text = ""
 
-    return text
+        pdf_document = fitz.open(
+            stream=uploaded_file.read(),
+            filetype="pdf"
+        )
+
+        for page in pdf_document:
+            text += page.get_text()
+
+        return text
+
+    except Exception as e:
+
+        return f"PDF extraction error: {str(e)}"
 
 # =========================================================
 # LATEX CLEANER
@@ -194,7 +212,7 @@ def clean_latex(text):
     return text
 
 # =========================================================
-# SYSTEM PROMPT BUILDER
+# SYSTEM PROMPT
 # =========================================================
 
 def build_system_prompt(mode):
@@ -207,29 +225,57 @@ SPECIALIZATION:
 
 STRICT RULES:
 
-1. NEVER destroy equations.
-2. Preserve ALL formulas exactly.
-3. Use proper LaTeX formatting.
-4. Show step-by-step derivations.
-5. Use professional markdown formatting.
-6. Explain concepts deeply.
-7. Maintain academic rigor.
-8. Use structured sections.
-9. Include examples.
-10. Generate copyable LaTeX blocks.
-11. Cross-verify mathematical reasoning before final answers.
+1. Preserve equations exactly.
+2. Use LaTeX formatting.
+3. Show step-by-step derivations.
+4. Maintain academic rigor.
+5. Use professional markdown.
+6. Include examples.
+7. Keep outputs readable.
+8. Never simplify mathematical expressions incorrectly.
 
-LATEX RULES:
+LATEX EXAMPLES:
 
-Inline Equation:
+Inline:
 $E = mc^2$
 
-Block Equation:
+Block:
 $$
 a^2 + b^2 = c^2
 $$
 
-After every important equation provide:
+After important equations provide copyable LaTeX blocks.
+
+Use:
+- headings
+- bullet points
+- structured formatting
+"""
+
+    return prompt
+
+# =========================================================
+# GEMMA ENGINE
+# =========================================================
+
+def ask_gemma(user_prompt, context):
+
+    if not OLLAMA_AVAILABLE:
+
+        return f"""
+# Demo Response
+
+Ollama is not installed on this device.
+
+## User Prompt
+
+{user_prompt}
+
+## Example Equation
+
+$$
+E = mc^2
+$$
 
 ```latex
-a^2 + b^2 = c^2
+E = mc^2
