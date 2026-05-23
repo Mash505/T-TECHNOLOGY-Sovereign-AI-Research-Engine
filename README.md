@@ -107,7 +107,7 @@ AI Research Chat
 
 Clone Repository
 
-git clone https://github.com/YOUR_USERNAME/T-TECHNOLOGY-Sovereign-AI-Research-Engine.git
+git clone https://github.com/MASH505/T-TECHNOLOGY-Sovereign-AI-Research-Engine.git
 
 ---
 
