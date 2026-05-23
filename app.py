@@ -55,6 +55,10 @@ code {
     padding-bottom: 2rem;
 }
 
+[data-testid="stSidebar"] {
+    background-color: #111827;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -85,7 +89,7 @@ with st.sidebar:
     st.markdown("---")
 
     model_choice = st.selectbox(
-        "Model",
+        "Choose Gemma Model",
         [
             "gemma3:12b",
             "gemma3:4b"
@@ -111,7 +115,7 @@ with st.sidebar:
     )
 
     max_context = st.slider(
-        "Max Context Size",
+        "Maximum Context",
         2000,
         30000,
         12000
@@ -119,15 +123,16 @@ with st.sidebar:
 
     st.markdown("---")
 
-    st.info(
-        f"""
-        🚀 Sovereign AI Engine
-        
-        • Model: {model_choice}
-        • Mode: {research_mode}
-        • Local Inference Enabled
-        """
-    )
+    st.success("✅ Sovereign Local Inference Enabled")
+
+    st.info(f"""
+Model: {model_choice}
+
+Mode: {research_mode}
+
+Architecture:
+T TECHNOLOGY RESEARCH LAB
+""")
 
 # =========================================================
 # HEADER
@@ -138,18 +143,20 @@ st.title("🚀 T TECHNOLOGY Sovereign AI Research Engine")
 st.markdown("""
 ### Architected by MOSIN LIYAKAT SHAIKH
 
-Advanced AI infrastructure for:
+Advanced sovereign AI infrastructure for:
 
 - Mathematical reasoning
 - Quantitative finance
 - Scientific research
 - PDF intelligence
 - LaTeX-preserving workflows
-- Sovereign local inference
+- Local private inference
 """)
 
+st.markdown("---")
+
 # =========================================================
-# PDF PROCESSING
+# PDF EXTRACTION
 # =========================================================
 
 def extract_pdf_text(uploaded_file):
@@ -187,12 +194,12 @@ def clean_latex(text):
     return text
 
 # =========================================================
-# SYSTEM PROMPT
+# SYSTEM PROMPT BUILDER
 # =========================================================
 
 def build_system_prompt(mode):
 
-    base_prompt = f"""
+    prompt = f"""
 You are an elite AI research scientist working for T TECHNOLOGY RESEARCH LAB.
 
 SPECIALIZATION:
@@ -202,22 +209,22 @@ STRICT RULES:
 
 1. NEVER destroy equations.
 2. Preserve ALL formulas exactly.
-3. Use LaTeX formatting.
+3. Use proper LaTeX formatting.
 4. Show step-by-step derivations.
-5. Use professional markdown.
+5. Use professional markdown formatting.
 6. Explain concepts deeply.
 7. Maintain academic rigor.
 8. Use structured sections.
-9. Provide examples.
-10. Generate copyable raw LaTeX blocks.
-11. Always cross-verify mathematical steps before presenting results.
+9. Include examples.
+10. Generate copyable LaTeX blocks.
+11. Cross-verify mathematical reasoning before final answers.
 
 LATEX RULES:
 
-Inline:
+Inline Equation:
 $E = mc^2$
 
-Block:
+Block Equation:
 $$
 a^2 + b^2 = c^2
 $$
